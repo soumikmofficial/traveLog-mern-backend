@@ -6,26 +6,19 @@ const app = express();
 // other imports
 const connectDB = require("./db/connect");
 const authRouter = require("./routes/authRoutes");
+const pinRouter = require("./routes/pinRoutes");
 const errorHandlerMiddleware = require("./middlewares/error-handler");
 
 // packages
 const morgan = require("morgan");
-const fileUpload = require("express-fileupload");
-const cloudinary = require("cloudinary").v2;
-
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUD_API_KEY,
-  api_secret: process.env.CLOUD_API_SECRET,
-});
 
 app.use(morgan("tiny"));
 app.use(express.static("./public"));
 app.use(express.json());
-app.use(fileUpload({ useTempFiles: true }));
 
 // .............routes.............
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/pins", pinRouter);
 
 // .............middlewares......................
 app.use(errorHandlerMiddleware);

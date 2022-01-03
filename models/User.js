@@ -3,45 +3,58 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 
 const UserSchema = new mongoose.Schema({
+  avatar: {
+    type: String,
+    default: "/uploads/avatars/default.jpg",
+  },
   name: {
     type: String,
-    required: true,
-    maxLength: [50, "name is too long"],
+    required: [true, "Please provide name"],
+    minlength: 3,
+    maxlength: 50,
   },
   email: {
     type: String,
-    required: true,
     unique: true,
-    maxLength: [50, "name is too long"],
-    validate: [validator.isEmail, "Please provide a valid email"],
+    required: [true, "Please provide email"],
+    validate: {
+      validator: validator.isEmail,
+      message: "Please provide valid email",
+    },
   },
   password: {
     type: String,
-    required: true,
-    minLength: [8, "Try a longer password"],
+    required: [true, "Please provide password"],
+    minlength: 6,
   },
-
-  avatar: {
-    type: String,
-    url: "/uploads/avatars/default.jpg",
-  },
-
   role: {
     type: String,
-    required: true,
+    enum: ["admin", "user"],
+    default: "user",
   },
+  verificationToken: String,
   isVerified: {
     type: Boolean,
     default: false,
   },
-  verificationToken: String,
-  passwordToken: String,
-  passwordTokenExpirationDate: Date,
+  verified: Date,
+  passwordToken: {
+    type: String,
+  },
+  passwordTokenExpirationDate: {
+    type: Date,
+  },
 });
 
 UserSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
-  this.password = await bcrypt.hash(this.password, 10);
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
 });
+
+UserSchema.methods.comparePassword = async function (canditatePassword) {
+  const isMatch = await bcrypt.compare(canditatePassword, this.password);
+  return isMatch;
+};
 
 module.exports = mongoose.model("User", UserSchema);
