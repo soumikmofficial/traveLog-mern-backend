@@ -10,10 +10,10 @@ const PinSchema = new mongoose.Schema(
       required: true,
       maxLength: [50, "Title cannot exceed 50 characters"],
     },
-    title: {
+    review: {
       type: String,
       required: true,
-      maxLength: [50, "Title cannot exceed 50 characters"],
+      maxLength: [1000, "Review cannot exceed 50 characters"],
     },
     rating: {
       type: Number,
