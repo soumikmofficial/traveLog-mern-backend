@@ -9,7 +9,6 @@ const {
 
 // TODO: GET ALL USERS
 const getAllUsers = async (req, res) => {
-  console.log(req.user);
   const users = await User.find({ role: "user" }).select("-password");
   res.status(StatusCodes.OK).json({ users });
 };
@@ -26,6 +25,7 @@ const getSingleUser = async (req, res) => {
 
 // TODO: GET CURRENT
 const showCurrentUser = async (req, res) => {
+  console.log(req);
   res.status(StatusCodes.OK).json({ user: req.user });
 };
 

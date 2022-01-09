@@ -14,7 +14,7 @@ const crypto = require("crypto");
 
 //  TODO: REGISTER
 const register = async (req, res) => {
-  const { email, name, password } = req.body;
+  const { email, username, password } = req.body;
 
   const emailAlreadyExists = await User.findOne({ email });
   if (emailAlreadyExists) {
@@ -27,7 +27,7 @@ const register = async (req, res) => {
   const verificationToken = crypto.randomBytes(40).toString("hex");
 
   const user = await User.create({
-    name,
+    username,
     email,
     password,
     role,
@@ -37,12 +37,12 @@ const register = async (req, res) => {
   // *send verification mail
   const origin = "http://localhost:3000";
   await sendVerificationEmail({
-    name: user.name,
+    name: user.username,
     email: user.email,
     verificationToken: user.verificationToken,
     origin,
   });
-  // send verification token back only while testing in postman!!!
+
   res.status(StatusCodes.CREATED).json({
     msg: "Success! Please check your email to verify account",
     verificationToken,
@@ -122,6 +122,7 @@ const login = async (req, res) => {
 
 // TODO: LOGOUT
 const logout = async (req, res) => {
+  console.log(req);
   await Token.findOneAndDelete({ user: req.user.userId });
 
   res.cookie("accessToken", "logout", {

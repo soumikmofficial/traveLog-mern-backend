@@ -7,11 +7,12 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "/uploads/avatars/default.jpg",
   },
-  name: {
+  username: {
     type: String,
     required: [true, "Please provide name"],
     minlength: 3,
-    maxlength: 50,
+    maxlength: 10,
+    unique: [true, "username already taken"],
   },
   email: {
     type: String,
