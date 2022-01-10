@@ -15,7 +15,10 @@ const createPin = async (req, res) => {
 };
 // TODO: Delete Pin
 const deletePin = async (req, res) => {
-  const pin = await Pin.findOne({ _id: req.params.id });
+  const pin = await Pin.findOne({
+    _id: req.params.id,
+    username: req.user.username,
+  });
   if (!pin) {
     throw new CustomError.BadRequestError(
       `No pin with the id of ${req.params.id}`
