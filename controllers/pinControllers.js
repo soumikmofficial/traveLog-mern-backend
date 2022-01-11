@@ -21,11 +21,30 @@ const deletePin = async (req, res) => {
   });
   if (!pin) {
     throw new CustomError.BadRequestError(
-      `No pin with the id of ${req.params.id}`
+      `Current user has no pin with the id of ${req.params.id}`
     );
   }
   await pin.remove();
   res.status(StatusCodes.CREATED).json({ msg: `pin removed successfully` });
 };
 
-module.exports = { getAllPins, createPin, deletePin };
+// TODO: Update Pin
+const updatePin = async (req, res) => {
+  const pin = await Pin.findOneAndUpdate(
+    {
+      _id: req.params.id,
+      username: req.user.username,
+    },
+    req.body,
+    { new: true }
+  );
+  if (!pin) {
+    throw new CustomError.BadRequestError(
+      `Current user has no pin with the id of ${req.params.id}`
+    );
+  }
+
+  res.status(StatusCodes.CREATED).json({ pin });
+};
+
+module.exports = { getAllPins, createPin, deletePin, updatePin };

@@ -25,7 +25,6 @@ const getSingleUser = async (req, res) => {
 
 // TODO: GET CURRENT
 const showCurrentUser = async (req, res) => {
-  console.log(req);
   res.status(StatusCodes.OK).json({ user: req.user });
 };
 
